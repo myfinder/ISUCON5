@@ -161,6 +161,15 @@ SQL
     };
 }
 
+sub get_comment_count {
+    my ($entry_id) = @_;
+    cache->get("comment_count_" . $entry_id) or do {
+        my $count = db->select_one('SELECT COUNT(*) AS c FROM comments WHERE entry_id = ?', $entry_id);
+        cache->set("comment_count_$entry_id", $count);
+        $count;
+    };
+}
+
 sub user_from_account {
     my ($account_name) = @_;
     my $user = $Isucon5::USER_FROM_ACCOUNT{$account_name};
@@ -431,7 +440,7 @@ get '/diary/entries/:account_name' => [qw(set_global authenticated)] => sub {
         my ($title, $content) = split(/\n/, $entry->{body}, 2);
         $entry->{title} = $title;
         $entry->{content} = $content;
-        $entry->{comment_count} = db->select_one('SELECT COUNT(*) AS c FROM comments WHERE entry_id = ?', $entry->{id});
+        $entry->{comment_count} = get_comment_count($entry->{id});
         push @$entries, $entry;
     }
     mark_footprint($owner->{id});
@@ -500,6 +509,9 @@ post '/diary/comment/:entry_id' => [qw(set_global authenticated)] => sub {
     db->query($query, $entry->{id}, current_user()->{id}, $comment);
     cache->delete("comments_" . $entry->{user_id});
     cache->delete("comments_all");
+    my $comment_count = get_comment_count($entry->{id});
+    $comment_count++;
+    cache->set("comment_count_" . $entry->{id}, $comment_count);
     redirect('/diary/entry/'.$entry->{id});
 };
 
