@@ -497,6 +497,9 @@ post '/friends/:account_name' => [qw(set_global authenticated)] => sub {
 
 get '/initialize' => sub {
     my ($self, $c) = @_;
+    for my $profile (@{db->select_all('SELECT * FROM profiles')}) {
+        cache->set("profile_" . $profile->{user_id}, $profile);
+    }
     db->query("DELETE FROM relations WHERE id > 500000");
     db->query("DELETE FROM footprints WHERE id > 500000");
     db->query("DELETE FROM entries WHERE id > 500000");
