@@ -90,7 +90,8 @@ sub current_user {
 
     return undef if (!session()->{user_id});
 
-    $user = db->select_row('SELECT id, account_name, nick_name, email FROM users WHERE id=?', session()->{user_id});
+#    $user = db->select_row('SELECT id, account_name, nick_name, email FROM users WHERE id=?', session()->{user_id});
+    $user = $Isucon5::USERS{session()->{user_id}};
     if (!$user) {
         session()->{user_id} = undef;
         abort_authentication_error();
