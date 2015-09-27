@@ -1,0 +1,271 @@
+{
+   "abstract" : "Crypto toolkit",
+   "author" : [
+      "Karel Miko"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Module::Build version 0.4214",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "CryptX",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::CBuilder" : "0",
+            "File::Find" : "0",
+            "JSON" : "2.01",
+            "MIME::Base64" : "3.11",
+            "Module::Build" : "0",
+            "Test::More" : "0.88"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Exporter" : "5.59",
+            "JSON" : "2.01",
+            "MIME::Base64" : "3.11",
+            "perl" : "5.006"
+         }
+      }
+   },
+   "provides" : {
+      "Crypt::AuthEnc" : {
+         "file" : "lib/Crypt/AuthEnc.pm"
+      },
+      "Crypt::AuthEnc::CCM" : {
+         "file" : "lib/Crypt/AuthEnc/CCM.pm"
+      },
+      "Crypt::AuthEnc::EAX" : {
+         "file" : "lib/Crypt/AuthEnc/EAX.pm"
+      },
+      "Crypt::AuthEnc::GCM" : {
+         "file" : "lib/Crypt/AuthEnc/GCM.pm"
+      },
+      "Crypt::AuthEnc::OCB" : {
+         "file" : "lib/Crypt/AuthEnc/OCB.pm"
+      },
+      "Crypt::Cipher" : {
+         "file" : "lib/Crypt/Cipher.pm"
+      },
+      "Crypt::Cipher::AES" : {
+         "file" : "lib/Crypt/Cipher/AES.pm"
+      },
+      "Crypt::Cipher::Anubis" : {
+         "file" : "lib/Crypt/Cipher/Anubis.pm"
+      },
+      "Crypt::Cipher::Blowfish" : {
+         "file" : "lib/Crypt/Cipher/Blowfish.pm"
+      },
+      "Crypt::Cipher::CAST5" : {
+         "file" : "lib/Crypt/Cipher/CAST5.pm"
+      },
+      "Crypt::Cipher::Camellia" : {
+         "file" : "lib/Crypt/Cipher/Camellia.pm"
+      },
+      "Crypt::Cipher::DES" : {
+         "file" : "lib/Crypt/Cipher/DES.pm"
+      },
+      "Crypt::Cipher::DES_EDE" : {
+         "file" : "lib/Crypt/Cipher/DES_EDE.pm"
+      },
+      "Crypt::Cipher::KASUMI" : {
+         "file" : "lib/Crypt/Cipher/KASUMI.pm"
+      },
+      "Crypt::Cipher::Khazad" : {
+         "file" : "lib/Crypt/Cipher/Khazad.pm"
+      },
+      "Crypt::Cipher::MULTI2" : {
+         "file" : "lib/Crypt/Cipher/MULTI2.pm"
+      },
+      "Crypt::Cipher::Noekeon" : {
+         "file" : "lib/Crypt/Cipher/Noekeon.pm"
+      },
+      "Crypt::Cipher::RC2" : {
+         "file" : "lib/Crypt/Cipher/RC2.pm"
+      },
+      "Crypt::Cipher::RC5" : {
+         "file" : "lib/Crypt/Cipher/RC5.pm"
+      },
+      "Crypt::Cipher::RC6" : {
+         "file" : "lib/Crypt/Cipher/RC6.pm"
+      },
+      "Crypt::Cipher::SAFERP" : {
+         "file" : "lib/Crypt/Cipher/SAFERP.pm"
+      },
+      "Crypt::Cipher::SAFER_K128" : {
+         "file" : "lib/Crypt/Cipher/SAFER_K128.pm"
+      },
+      "Crypt::Cipher::SAFER_K64" : {
+         "file" : "lib/Crypt/Cipher/SAFER_K64.pm"
+      },
+      "Crypt::Cipher::SAFER_SK128" : {
+         "file" : "lib/Crypt/Cipher/SAFER_SK128.pm"
+      },
+      "Crypt::Cipher::SAFER_SK64" : {
+         "file" : "lib/Crypt/Cipher/SAFER_SK64.pm"
+      },
+      "Crypt::Cipher::SEED" : {
+         "file" : "lib/Crypt/Cipher/SEED.pm"
+      },
+      "Crypt::Cipher::Skipjack" : {
+         "file" : "lib/Crypt/Cipher/Skipjack.pm"
+      },
+      "Crypt::Cipher::Twofish" : {
+         "file" : "lib/Crypt/Cipher/Twofish.pm"
+      },
+      "Crypt::Cipher::XTEA" : {
+         "file" : "lib/Crypt/Cipher/XTEA.pm"
+      },
+      "Crypt::Digest" : {
+         "file" : "lib/Crypt/Digest.pm"
+      },
+      "Crypt::Digest::CHAES" : {
+         "file" : "lib/Crypt/Digest/CHAES.pm"
+      },
+      "Crypt::Digest::MD2" : {
+         "file" : "lib/Crypt/Digest/MD2.pm"
+      },
+      "Crypt::Digest::MD4" : {
+         "file" : "lib/Crypt/Digest/MD4.pm"
+      },
+      "Crypt::Digest::MD5" : {
+         "file" : "lib/Crypt/Digest/MD5.pm"
+      },
+      "Crypt::Digest::RIPEMD128" : {
+         "file" : "lib/Crypt/Digest/RIPEMD128.pm"
+      },
+      "Crypt::Digest::RIPEMD160" : {
+         "file" : "lib/Crypt/Digest/RIPEMD160.pm"
+      },
+      "Crypt::Digest::RIPEMD256" : {
+         "file" : "lib/Crypt/Digest/RIPEMD256.pm"
+      },
+      "Crypt::Digest::RIPEMD320" : {
+         "file" : "lib/Crypt/Digest/RIPEMD320.pm"
+      },
+      "Crypt::Digest::SHA1" : {
+         "file" : "lib/Crypt/Digest/SHA1.pm"
+      },
+      "Crypt::Digest::SHA224" : {
+         "file" : "lib/Crypt/Digest/SHA224.pm"
+      },
+      "Crypt::Digest::SHA256" : {
+         "file" : "lib/Crypt/Digest/SHA256.pm"
+      },
+      "Crypt::Digest::SHA384" : {
+         "file" : "lib/Crypt/Digest/SHA384.pm"
+      },
+      "Crypt::Digest::SHA512" : {
+         "file" : "lib/Crypt/Digest/SHA512.pm"
+      },
+      "Crypt::Digest::SHA512_224" : {
+         "file" : "lib/Crypt/Digest/SHA512_224.pm"
+      },
+      "Crypt::Digest::SHA512_256" : {
+         "file" : "lib/Crypt/Digest/SHA512_256.pm"
+      },
+      "Crypt::Digest::Tiger192" : {
+         "file" : "lib/Crypt/Digest/Tiger192.pm"
+      },
+      "Crypt::Digest::Whirlpool" : {
+         "file" : "lib/Crypt/Digest/Whirlpool.pm"
+      },
+      "Crypt::KeyDerivation" : {
+         "file" : "lib/Crypt/KeyDerivation.pm"
+      },
+      "Crypt::Mac" : {
+         "file" : "lib/Crypt/Mac.pm"
+      },
+      "Crypt::Mac::F9" : {
+         "file" : "lib/Crypt/Mac/F9.pm"
+      },
+      "Crypt::Mac::HMAC" : {
+         "file" : "lib/Crypt/Mac/HMAC.pm"
+      },
+      "Crypt::Mac::OMAC" : {
+         "file" : "lib/Crypt/Mac/OMAC.pm"
+      },
+      "Crypt::Mac::PMAC" : {
+         "file" : "lib/Crypt/Mac/PMAC.pm"
+      },
+      "Crypt::Mac::Pelican" : {
+         "file" : "lib/Crypt/Mac/Pelican.pm"
+      },
+      "Crypt::Mac::XCBC" : {
+         "file" : "lib/Crypt/Mac/XCBC.pm"
+      },
+      "Crypt::Mode" : {
+         "file" : "lib/Crypt/Mode.pm"
+      },
+      "Crypt::Mode::CBC" : {
+         "file" : "lib/Crypt/Mode/CBC.pm"
+      },
+      "Crypt::Mode::CFB" : {
+         "file" : "lib/Crypt/Mode/CFB.pm"
+      },
+      "Crypt::Mode::CTR" : {
+         "file" : "lib/Crypt/Mode/CTR.pm"
+      },
+      "Crypt::Mode::ECB" : {
+         "file" : "lib/Crypt/Mode/ECB.pm"
+      },
+      "Crypt::Mode::OFB" : {
+         "file" : "lib/Crypt/Mode/OFB.pm"
+      },
+      "Crypt::PK" : {
+         "file" : "lib/Crypt/PK.pm"
+      },
+      "Crypt::PK::DH" : {
+         "file" : "lib/Crypt/PK/DH.pm"
+      },
+      "Crypt::PK::DSA" : {
+         "file" : "lib/Crypt/PK/DSA.pm"
+      },
+      "Crypt::PK::ECC" : {
+         "file" : "lib/Crypt/PK/ECC.pm"
+      },
+      "Crypt::PK::RSA" : {
+         "file" : "lib/Crypt/PK/RSA.pm"
+      },
+      "Crypt::PRNG" : {
+         "file" : "lib/Crypt/PRNG.pm"
+      },
+      "Crypt::PRNG::Fortuna" : {
+         "file" : "lib/Crypt/PRNG/Fortuna.pm"
+      },
+      "Crypt::PRNG::RC4" : {
+         "file" : "lib/Crypt/PRNG/RC4.pm"
+      },
+      "Crypt::PRNG::Sober128" : {
+         "file" : "lib/Crypt/PRNG/Sober128.pm"
+      },
+      "Crypt::PRNG::Yarrow" : {
+         "file" : "lib/Crypt/PRNG/Yarrow.pm"
+      },
+      "CryptX" : {
+         "file" : "lib/CryptX.pm",
+         "version" : "0.025"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "https://github.com/DCIT/perl-CryptX"
+      }
+   },
+   "version" : "0.025",
+   "x_serialization_backend" : "JSON::PP version 2.27203"
+}

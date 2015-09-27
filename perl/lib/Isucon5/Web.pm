@@ -8,6 +8,8 @@ use Kossy;
 use DBIx::Sunny;
 use Encode;
 use Cache::Memcached::Fast;
+use Crypt::Digest::SHA512 qw/sha512_hex/;
+use Data::Dumper;
 
 my $db;
 sub db {
@@ -68,17 +70,14 @@ sub abort_content_not_found {
 
 sub authenticate {
     my ($email, $password) = @_;
-    my $query = <<SQL;
-SELECT u.id AS id, u.account_name AS account_name, u.nick_name AS nick_name, u.email AS email
-FROM users u
-JOIN salts s ON u.id = s.user_id
-WHERE u.email = ? AND u.passhash = SHA2(CONCAT(?, s.salt), 512)
-SQL
-    my $result = db->select_row($query, $email, $password);
-    if (!$result) {
-        abort_authentication_error();
-    }
-    session()->{user_id} = $result->{id};
+    abort_authentication_error() if !$Isucon5::HASH_FROM_MAIL{$email};
+    my $hashed_password = sha512_hex($password . $Isucon5::HASH_FROM_MAIL{$email}{'salt'});
+    abort_authentication_error() if $hashed_password ne $Isucon5::HASH_FROM_MAIL{$email}{'passhash'};
+    my $result->{id}        = $Isucon5::HASH_FROM_MAIL{$email}{'id'};
+    $result->{account_name} = $Isucon5::HASH_FROM_MAIL{$email}{'account_name'};
+    $result->{nick_name}    = $Isucon5::HASH_FROM_MAIL{$email}{'nick_name'};
+    $result->{email}        = $Isucon5::HASH_FROM_MAIL{$email}{'email'};
+    session()->{user_id}    = $result->{id};
     return $result;
 }
 
