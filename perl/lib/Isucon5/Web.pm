@@ -149,6 +149,17 @@ sub user_from_account {
 sub is_friend {
     my ($another_id) = @_;
     my $user_id = session()->{user_id};
+    my $seed = memd_seed();
+    my $key = "rel_$seed:$user_id-$another_id";
+    stash->{$key} //= cache->get($key) // do {
+        my $ret = _is_friend($user_id, $another_id);
+        cache->set($key, $ret);
+        $ret;
+    ;}
+}
+
+sub _is_friend {
+    my ($user_id, $another_id) = @_;
     my $query = 'SELECT COUNT(1) AS cnt FROM relations WHERE (one = ? AND another = ?)';
     my $cnt = db->select_one($query, $user_id, $another_id);
     return $cnt > 0 ? 1 : 0;
@@ -170,6 +181,14 @@ sub mark_footprint {
 sub permitted {
     my ($another_id) = @_;
     $another_id == current_user()->{id} || is_friend($another_id);
+}
+
+sub memd_seed {
+    stash->{'memd_seed'} //= cache->get('memd_seed')
+}
+
+sub gen_memd_seed {
+    cache->set('memd_seed', int(rand() * 1000), 3600)
 }
 
 my $PREFS;
@@ -513,12 +532,16 @@ post '/friends/:account_name' => [qw(set_global authenticated)] => sub {
         my $user = user_from_account($account_name);
         abort_content_not_found() if (!$user);
         db->query('INSERT INTO relations (one, another) VALUES (?,?), (?,?)', current_user()->{id}, $user->{id}, $user->{id}, current_user()->{id});
+        my $seed = memd_seed();
+        cache->delete(sprintf("rel_%s:%s-%s", $seed, current_user()->{id}, $user->{id}));
+        cache->delete(sprintf("rel_%s:%s-%s", $seed, $user->{id}, current_user()->{id}));
         redirect('/friends');
     }
 };
 
 get '/initialize' => sub {
     my ($self, $c) = @_;
+    gen_memd_seed;
     for my $profile (@{db->select_all('SELECT * FROM profiles')}) {
         cache->set("profile_" . $profile->{user_id}, $profile);
     }
