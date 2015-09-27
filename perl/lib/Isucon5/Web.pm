@@ -139,6 +139,28 @@ sub get_entries {
     };
 }
 
+sub get_footprints {
+    my ($user_id) = @_;
+    cache->get("footprints_$user_id") or do {
+    my $query = <<SQL;
+SELECT user_id, owner_id, created_at as updated
+FROM footprints
+WHERE user_id = ?
+ORDER BY id DESC
+LIMIT 50
+SQL
+        my $footprints = [];
+        for my $fp (@{db->select_all($query, $user_id)}) {
+            my $owner = get_user($fp->{owner_id});
+            $fp->{account_name} = $owner->{account_name};
+            $fp->{nick_name} = $owner->{nick_name};
+            push @$footprints, $fp;
+        }
+        cache->set("footprints_", $user_id, $footprints);
+        $footprints;
+    };
+}
+
 sub user_from_account {
     my ($account_name) = @_;
     my $user = $Isucon5::USER_FROM_ACCOUNT{$account_name};
@@ -173,8 +195,13 @@ sub is_friend_account {
 sub mark_footprint {
     my ($user_id) = @_;
     if ($user_id != current_user()->{id}) {
+        my $u = current_user();
         my $query = 'INSERT INTO footprints (user_id,owner_id) VALUES (?,?)';
-        db->query($query, $user_id, current_user()->{id});
+        db->query($query, $user_id, $u->{id});
+        my $footprints = get_footprints($u->{id});
+        unshift(@$footprints, { account_name => $u->{account_name}, nick_name => $u->{nick_name}, updated => '2015-08-09 01:36:00' });
+        pop(@$footprints);
+        cache->set("footprints_" . $u->{id}, $footprints);
     }
 }
 
@@ -321,20 +348,8 @@ SQL
         };
     }
 
-    my $query = <<SQL;
-SELECT user_id, owner_id, created_at as updated
-FROM footprints
-WHERE user_id = ?
-ORDER BY id DESC
-LIMIT 10
-SQL
-    my $footprints = [];
-    for my $fp (@{db->select_all($query, current_user()->{id})}) {
-        my $owner = get_user($fp->{owner_id});
-        $fp->{account_name} = $owner->{account_name};
-        $fp->{nick_name} = $owner->{nick_name};
-        push @$footprints, $fp;
-    }
+    my $footprints = get_footprints(current_user()->{id});
+    $footprints = [@{$footprints}[0..9]];
 
     my $locals = {
         'user' => current_user(),
@@ -490,21 +505,7 @@ post '/diary/comment/:entry_id' => [qw(set_global authenticated)] => sub {
 
 get '/footprints' => [qw(set_global authenticated)] => sub {
     my ($self, $c) = @_;
-    my $query = <<SQL;
-SELECT user_id, owner_id, created_at as updated
-FROM footprints
-WHERE user_id = ?
-ORDER BY id DESC
-LIMIT 50
-SQL
-    my $footprints = [];
-    for my $fp (@{db->select_all($query, current_user()->{id})}) {
-        my $owner = get_user($fp->{owner_id});
-        $fp->{account_name} = $owner->{account_name};
-        $fp->{nick_name} = $owner->{nick_name};
-        push @$footprints, $fp;
-    }
-    $c->render('footprints.tx', { footprints => $footprints });
+    $c->render('footprints.tx', { footprints => get_footprints(current_user()->{id}) });
 };
 
 get '/friends' => [qw(set_global authenticated)] => sub {
@@ -549,6 +550,7 @@ get '/initialize' => sub {
         cache->delete("entries_" . $user->{id});
         cache->delete("entries_pub_" . $user->{id});
         cache->delete("comments_" . $user->{id});
+        cache->delete("footprints_" . $user->{id});
     }
     cache->delete("entries_all");
     cache->delete("comments_all");
