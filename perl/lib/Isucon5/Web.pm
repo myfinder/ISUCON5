@@ -254,11 +254,10 @@ SQL
     }
 
     my $query = <<SQL;
-SELECT user_id, owner_id, DATE(created_at) AS date, MAX(created_at) as updated
+SELECT user_id, owner_id, created_at as updated
 FROM footprints
 WHERE user_id = ?
-GROUP BY user_id, owner_id, DATE(created_at)
-ORDER BY updated DESC
+ORDER BY id DESC
 LIMIT 10
 SQL
     my $footprints = [];
@@ -430,11 +429,10 @@ post '/diary/comment/:entry_id' => [qw(set_global authenticated)] => sub {
 get '/footprints' => [qw(set_global authenticated)] => sub {
     my ($self, $c) = @_;
     my $query = <<SQL;
-SELECT user_id, owner_id, DATE(created_at) AS date, MAX(created_at) as updated
+SELECT user_id, owner_id, created_at as updated
 FROM footprints
 WHERE user_id = ?
-GROUP BY user_id, owner_id, DATE(created_at)
-ORDER BY updated DESC
+ORDER BY id DESC
 LIMIT 50
 SQL
     my $footprints = [];
