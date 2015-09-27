@@ -130,6 +130,90 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       perl 5.008001
+  CryptX-0.025
+    pathname: M/MI/MIK/CryptX-0.025.tar.gz
+    provides:
+      Crypt::AuthEnc undef
+      Crypt::AuthEnc::CCM undef
+      Crypt::AuthEnc::EAX undef
+      Crypt::AuthEnc::GCM undef
+      Crypt::AuthEnc::OCB undef
+      Crypt::Cipher undef
+      Crypt::Cipher::AES undef
+      Crypt::Cipher::Anubis undef
+      Crypt::Cipher::Blowfish undef
+      Crypt::Cipher::CAST5 undef
+      Crypt::Cipher::Camellia undef
+      Crypt::Cipher::DES undef
+      Crypt::Cipher::DES_EDE undef
+      Crypt::Cipher::KASUMI undef
+      Crypt::Cipher::Khazad undef
+      Crypt::Cipher::MULTI2 undef
+      Crypt::Cipher::Noekeon undef
+      Crypt::Cipher::RC2 undef
+      Crypt::Cipher::RC5 undef
+      Crypt::Cipher::RC6 undef
+      Crypt::Cipher::SAFERP undef
+      Crypt::Cipher::SAFER_K128 undef
+      Crypt::Cipher::SAFER_K64 undef
+      Crypt::Cipher::SAFER_SK128 undef
+      Crypt::Cipher::SAFER_SK64 undef
+      Crypt::Cipher::SEED undef
+      Crypt::Cipher::Skipjack undef
+      Crypt::Cipher::Twofish undef
+      Crypt::Cipher::XTEA undef
+      Crypt::Digest undef
+      Crypt::Digest::CHAES undef
+      Crypt::Digest::MD2 undef
+      Crypt::Digest::MD4 undef
+      Crypt::Digest::MD5 undef
+      Crypt::Digest::RIPEMD128 undef
+      Crypt::Digest::RIPEMD160 undef
+      Crypt::Digest::RIPEMD256 undef
+      Crypt::Digest::RIPEMD320 undef
+      Crypt::Digest::SHA1 undef
+      Crypt::Digest::SHA224 undef
+      Crypt::Digest::SHA256 undef
+      Crypt::Digest::SHA384 undef
+      Crypt::Digest::SHA512 undef
+      Crypt::Digest::SHA512_224 undef
+      Crypt::Digest::SHA512_256 undef
+      Crypt::Digest::Tiger192 undef
+      Crypt::Digest::Whirlpool undef
+      Crypt::KeyDerivation undef
+      Crypt::Mac undef
+      Crypt::Mac::F9 undef
+      Crypt::Mac::HMAC undef
+      Crypt::Mac::OMAC undef
+      Crypt::Mac::PMAC undef
+      Crypt::Mac::Pelican undef
+      Crypt::Mac::XCBC undef
+      Crypt::Mode undef
+      Crypt::Mode::CBC undef
+      Crypt::Mode::CFB undef
+      Crypt::Mode::CTR undef
+      Crypt::Mode::ECB undef
+      Crypt::Mode::OFB undef
+      Crypt::PK undef
+      Crypt::PK::DH undef
+      Crypt::PK::DSA undef
+      Crypt::PK::ECC undef
+      Crypt::PK::RSA undef
+      Crypt::PRNG undef
+      Crypt::PRNG::Fortuna undef
+      Crypt::PRNG::RC4 undef
+      Crypt::PRNG::Sober128 undef
+      Crypt::PRNG::Yarrow undef
+      CryptX 0.025
+    requirements:
+      Exporter 5.59
+      ExtUtils::CBuilder 0
+      File::Find 0
+      JSON 2.01
+      MIME::Base64 3.11
+      Module::Build 0
+      Test::More 0.88
+      perl 5.006
   DBD-SQLite-1.40
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.40.tar.gz
     provides:

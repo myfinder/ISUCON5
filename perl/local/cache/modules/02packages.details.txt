@@ -4,12 +4,13 @@ Description:  Package names found in cpanfile.snapshot
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
 Written-By:   Carton v1.0.22
-Line-Count:   532
-Last-Updated: Sun Sep 27 14:04:02 2015
+Line-Count:   533
+Last-Updated: Sun Sep 27 15:29:13 2015
 
 Apache::LogFormat::Compiler        0.13  K/KA/KAZEBURO/Apache-LogFormat-Compiler-0.13.tar.gz
 Bundle::DBD::mysql                4.004  C/CA/CAPTTOFU/DBD-mysql-4.024.tar.gz
 Bundle::DBI                    12.008696  T/TI/TIMB/DBI-1.628.tar.gz
+Cache::Memcached::Fast             0.23  K/KR/KROKI/Cache-Memcached-Fast-0.23.tar.gz
 Capture::Tiny                      0.22  D/DA/DAGOLDEN/Capture-Tiny-0.22.tar.gz
 CGI                                4.21  L/LE/LEEJO/CGI-4.21.tar.gz
 CGI::Carp                          4.21  L/LE/LEEJO/CGI-4.21.tar.gz
