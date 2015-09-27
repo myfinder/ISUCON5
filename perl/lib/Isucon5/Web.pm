@@ -115,6 +115,30 @@ sub get_profile {
     };
 }
 
+sub get_entries {
+    my ($user_id, $is_private) = @_;
+    my ($entries_query, $key);
+    if ($is_private) {
+        $key = "entries_$user_id";
+        $entries_query = 'SELECT * FROM entries WHERE user_id = ? ORDER BY created_at LIMIT 5';
+    } else {
+        $key = "entries_pub_$user_id";
+        $entries_query = 'SELECT * FROM entries WHERE user_id = ? AND private=0 ORDER BY created_at LIMIT 5';
+    }
+    cache->get($key) or do {
+        my $entries = [];
+        for my $entry (@{db->select_all($entries_query, current_user()->{id})}) {
+            $entry->{is_private} = ($entry->{private} == 1);
+            my ($title, $content) = split(/\n/, $entry->{body}, 2);
+            $entry->{title} = $title;
+            $entry->{content} = $content;
+            push @$entries, $entry;
+        }
+        cache->set($key, $entries);
+        $entries;
+    };
+}
+
 sub user_from_account {
     my ($account_name) = @_;
     my $user = $Isucon5::USER_FROM_ACCOUNT{$account_name};
@@ -206,34 +230,33 @@ get '/' => [qw(set_global authenticated)] => sub {
 
     my $profile = get_profile(current_user()->{id});
 
-    my $entries_query = 'SELECT * FROM entries WHERE user_id = ? ORDER BY created_at LIMIT 5';
-    my $entries = [];
-    for my $entry (@{db->select_all($entries_query, current_user()->{id})}) {
-        $entry->{is_private} = ($entry->{private} == 1);
-        my ($title, $content) = split(/\n/, $entry->{body}, 2);
-        $entry->{title} = $title;
-        $entry->{content} = $content;
-        push @$entries, $entry;
-    }
+    my $entries = get_entries(current_user()->{id}, 1);
 
-    my $comments_for_me_query = <<SQL;
-SELECT c.id AS id, c.entry_id AS entry_id, c.user_id AS user_id, c.comment AS comment, c.created_at AS created_at
-FROM comments c
-WHERE c.user_id = ?
-ORDER BY c.created_at DESC
-LIMIT 10
+    my $comments_for_me = cache->get("comments_" . current_user()->{id});
+    unless ($comments_for_me) {
+        my $comments_for_me_query = <<SQL;
+    SELECT c.id AS id, c.entry_id AS entry_id, c.user_id AS user_id, c.comment AS comment, c.created_at AS created_at
+    FROM comments c
+    WHERE c.user_id = ?
+    ORDER BY c.created_at DESC
+    LIMIT 10
 SQL
-    my $comments_for_me = [];
-    my $comments = [];
-    for my $comment (@{db->select_all($comments_for_me_query, current_user()->{id})}) {
-        my $comment_user = get_user($comment->{user_id});
-        $comment->{account_name} = $comment_user->{account_name};
-        $comment->{nick_name} = $comment_user->{nick_name};
-        push @$comments_for_me, $comment;
+        for my $comment (@{db->select_all($comments_for_me_query, current_user()->{id})}) {
+            my $comment_user = get_user($comment->{user_id});
+            $comment->{account_name} = $comment_user->{account_name};
+            $comment->{nick_name} = $comment_user->{nick_name};
+            push @$comments_for_me, $comment;
+        }
+        cache->set("comments_" . current_user()->{id}, $comments_for_me);
     }
 
     my $entries_of_friends = [];
-    for my $entry (@{db->select_all('SELECT * FROM entries ORDER BY created_at DESC LIMIT 1000')}) {
+    my $entries_all = cache->get("entries_all");
+    unless($entries_all) {
+        $entries_all = db->select_all('SELECT * FROM entries ORDER BY created_at DESC LIMIT 1000');
+        cache->set("entries_all", $entries_all);
+    };
+    for my $entry (@$entries_all) {
         next if (!is_friend($entry->{user_id}));
         my ($title) = split(/\n/, $entry->{body});
         $entry->{title} = $title;
@@ -245,7 +268,12 @@ SQL
     }
 
     my $comments_of_friends = [];
-    for my $comment (@{db->select_all('SELECT * FROM comments ORDER BY created_at DESC LIMIT 1000')}) {
+    my $comments_all = cache->get("comments_all");
+    unless($comments_all) {
+        $comments_all = db->select_all('SELECT * FROM comments ORDER BY created_at DESC LIMIT 1000');
+        cache->set("comments_all", $comments_all);
+    };
+    for my $comment (@$comments_all) {
         next if (!is_friend($comment->{user_id}));
         my $entry = db->select_row('SELECT * FROM entries WHERE id = ?', $comment->{entry_id});
         $entry->{is_private} = ($entry->{private} == 1);
@@ -309,19 +337,7 @@ get '/profile/:account_name' => [qw(set_global authenticated)] => sub {
     my $prof = get_profile($owner->{id});
     $prof = {} if (!$prof);
     my $query;
-    if (permitted($owner->{id})) {
-        $query = 'SELECT * FROM entries WHERE user_id = ? ORDER BY created_at LIMIT 5';
-    } else {
-        $query = 'SELECT * FROM entries WHERE user_id = ? AND private=0 ORDER BY created_at LIMIT 5';
-    }
-    my $entries = [];
-    for my $entry (@{db->select_all($query, $owner->{id})}) {
-        $entry->{is_private} = ($entry->{private} == 1);
-        my ($title, $content) = split(/\n/, $entry->{body}, 2);
-        $entry->{title} = $title;
-        $entry->{content} = $content;
-        push @$entries, $entry;
-    }
+    my $entries = get_entries($owner->{id}, permitted($owner->{id}));
     mark_footprint($owner->{id});
     my $locals = {
         owner => $owner,
@@ -430,6 +446,9 @@ post '/diary/entry' => [qw(set_global authenticated)] => sub {
     my $private = $c->req->param('private');
     my $body = ($title || "タイトルなし") . "\n" . $content;
     db->query($query, current_user()->{id}, ($private ? '1' : '0'), $body);
+    cache->delete("entries_all");
+    cache->delete("entries_" . current_user()->{id});
+    cache->delete("entries_pub_" . current_user()->{id});
     redirect('/diary/entries/'.current_user()->{account_name});
 };
 
@@ -445,6 +464,8 @@ post '/diary/comment/:entry_id' => [qw(set_global authenticated)] => sub {
     my $query = 'INSERT INTO comments (entry_id, user_id, comment) VALUES (?,?,?)';
     my $comment = $c->req->param('comment');
     db->query($query, $entry->{id}, current_user()->{id}, $comment);
+    cache->delete("comments_" . $entry->{user_id});
+    cache->delete("comments_all");
     redirect('/diary/entry/'.$entry->{id});
 };
 
@@ -501,6 +522,13 @@ get '/initialize' => sub {
     for my $profile (@{db->select_all('SELECT * FROM profiles')}) {
         cache->set("profile_" . $profile->{user_id}, $profile);
     }
+    for my $user (@{db->select_all('SELECT id FROM users')}) {
+        cache->delete("entries_" . $user->{id});
+        cache->delete("entries_pub_" . $user->{id});
+        cache->delete("comments_" . $user->{id});
+    }
+    cache->delete("entries_all");
+    cache->delete("comments_all");
     db->query("DELETE FROM relations WHERE id > 500000");
     db->query("DELETE FROM footprints WHERE id > 500000");
     db->query("DELETE FROM entries WHERE id > 500000");
