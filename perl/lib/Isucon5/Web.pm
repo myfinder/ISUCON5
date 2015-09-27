@@ -198,8 +198,7 @@ get '/' => [qw(set_global authenticated)] => sub {
     my $comments_for_me_query = <<SQL;
 SELECT c.id AS id, c.entry_id AS entry_id, c.user_id AS user_id, c.comment AS comment, c.created_at AS created_at
 FROM comments c
-JOIN entries e ON c.entry_id = e.id
-WHERE e.user_id = ?
+WHERE c.user_id = ?
 ORDER BY c.created_at DESC
 LIMIT 10
 SQL
