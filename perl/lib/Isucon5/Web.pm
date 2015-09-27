@@ -117,7 +117,7 @@ sub get_profile {
 
 sub user_from_account {
     my ($account_name) = @_;
-    my $user = db->select_row('SELECT * FROM users WHERE account_name = ?', $account_name);
+    my $user = $Isucon5::USER_FROM_ACCOUNT{$account_name};
     abort_content_not_found() if (!$user);
     return $user;
 }
