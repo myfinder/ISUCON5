@@ -6,6 +6,7 @@ use utf8;
 use Kossy;
 use DBIx::Sunny;
 use Encode;
+use Cache::Memcached::Fast;
 
 my $db;
 sub db {
@@ -26,6 +27,15 @@ sub db {
                 mysql_auto_reconnect => 1,
             },
         );
+    };
+}
+
+my $cache;
+sub cache {
+    $cache ||= do {
+        Cache::Memcached::Fast->new({
+            servers => [$ENV{ISUCON5_MEMD_SERVER} || 'localhost:11211'],
+        });
     };
 }
 
@@ -92,6 +102,16 @@ sub get_user {
     my $user = db->select_row('SELECT * FROM users WHERE id = ?', $user_id);
     abort_content_not_found() if (!$user);
     return $user;
+}
+
+sub get_profile {
+    my ($user_id) = @_;
+    cache->get("profile_$user_id") or do {
+        my $profile = db->select_row('SELECT * FROM profiles WHERE user_id = ?', $user_id);
+        abort_content_not_found() if (!$profile);
+        cache->set("profile_$user_id", $profile);
+        $profile;
+    };
 }
 
 sub user_from_account {
@@ -183,7 +203,7 @@ get '/logout' => [qw(set_global)] => sub {
 get '/' => [qw(set_global authenticated)] => sub {
     my ($self, $c) = @_;
 
-    my $profile = db->select_row('SELECT * FROM profiles WHERE user_id = ?', current_user()->{id});
+    my $profile = get_profile(current_user()->{id});
 
     my $entries_query = 'SELECT * FROM entries WHERE user_id = ? ORDER BY created_at LIMIT 5';
     my $entries = [];
@@ -285,7 +305,7 @@ get '/profile/:account_name' => [qw(set_global authenticated)] => sub {
     my ($self, $c) = @_;
     my $account_name = $c->args->{account_name};
     my $owner = user_from_account($account_name);
-    my $prof = db->select_row('SELECT * FROM profiles WHERE user_id = ?', $owner->{id});
+    my $prof = get_profile($owner->{id});
     $prof = {} if (!$prof);
     my $query;
     if (permitted($owner->{id})) {
@@ -326,7 +346,7 @@ post '/profile/:account_name' => [qw(set_global authenticated)] => sub {
     my $birthday = $c->req->param('birthday');
     my $pref = $c->req->param('pref');
 
-    my $prof = db->select_row('SELECT * FROM profiles WHERE user_id = ?', current_user()->{id});
+    my $prof = get_profile(current_user()->{id});
     if ($prof) {
       my $query = <<SQL;
 UPDATE profiles
@@ -334,6 +354,7 @@ SET first_name=?, last_name=?, sex=?, birthday=?, pref=?, updated_at=CURRENT_TIM
 WHERE user_id = ?
 SQL
         db->query($query, $first_name, $last_name, $sex, $birthday, $pref, current_user()->{id});
+        cache->delete('profile_' . current_user()->{id});
     } else {
         my $query = <<SQL;
 INSERT INTO profiles (user_id,first_name,last_name,sex,birthday,pref) VALUES (?,?,?,?,?,?)

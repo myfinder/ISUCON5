@@ -4,8 +4,8 @@ Description:  Package names found in cpanfile.snapshot
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
 Written-By:   Carton v1.0.22
-Line-Count:   535
-Last-Updated: Sat Sep 26 19:46:06 2015
+Line-Count:   532
+Last-Updated: Sun Sep 27 14:04:02 2015
 
 Apache::LogFormat::Compiler        0.13  K/KA/KAZEBURO/Apache-LogFormat-Compiler-0.13.tar.gz
 Bundle::DBD::mysql                4.004  C/CA/CAPTTOFU/DBD-mysql-4.024.tar.gz
@@ -23,7 +23,6 @@ Class::Accessor::Lite              0.05  K/KA/KAZUHO/Class-Accessor-Lite-0.05.ta
 Class::Data::Inheritable           0.08  T/TM/TMTM/Class-Data-Inheritable-0.08.tar.gz
 Class::Inspector                   1.28  A/AD/ADAMK/Class-Inspector-1.28.tar.gz
 Class::Inspector::Functions        1.28  A/AD/ADAMK/Class-Inspector-1.28.tar.gz
-common::sense                      3.72  M/ML/MLEHMANN/common-sense-3.72.tar.gz
 Cookie::Baker                      0.06  K/KA/KAZEBURO/Cookie-Baker-0.06.tar.gz
 Cookie::Baker::XS                  0.06  K/KA/KAZEBURO/Cookie-Baker-XS-0.06.tar.gz
 CPAN::Meta                     2.150005  D/DA/DAGOLDEN/CPAN-Meta-2.150005.tar.gz
@@ -222,8 +221,6 @@ JSON                               2.59  M/MA/MAKAMAKA/JSON-2.59.tar.gz
 JSON::Backend::PP                  2.59  M/MA/MAKAMAKA/JSON-2.59.tar.gz
 JSON::backportPP::Boolean       2.27202  M/MA/MAKAMAKA/JSON-2.59.tar.gz
 JSON::Boolean                      2.59  M/MA/MAKAMAKA/JSON-2.59.tar.gz
-JSON::XS                           2.34  M/ML/MLEHMANN/JSON-XS-2.34.tar.gz
-JSON::XS::Boolean                  2.34  M/ML/MLEHMANN/JSON-XS-2.34.tar.gz
 Kossy                              0.38  K/KA/KAZEBURO/Kossy-0.38.tar.gz
 Kossy::Connection                  0.38  K/KA/KAZEBURO/Kossy-0.38.tar.gz
 Kossy::Exception                   0.38  K/KA/KAZEBURO/Kossy-0.38.tar.gz

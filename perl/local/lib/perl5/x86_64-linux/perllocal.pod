@@ -1120,3 +1120,25 @@ C<EXE_FILES: >
 
 =back
 
+=head2 Sun Sep 27 14:04:10 2015: C<Module> L<Cache::Memcached::Fast|Cache::Memcached::Fast>
+
+=over 4
+
+=item *
+
+C<installed into: /home/isucon/webapp/perl/local/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.23>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+
