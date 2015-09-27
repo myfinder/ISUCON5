@@ -70,13 +70,14 @@ sub abort_content_not_found {
 
 sub authenticate {
     my ($email, $password) = @_;
-    abort_authentication_error() if !$Isucon5::HASH_FROM_MAIL{$email};
-    my $hashed_password = sha512_hex($password . $Isucon5::HASH_FROM_MAIL{$email}{'salt'});
-    abort_authentication_error() if $hashed_password ne $Isucon5::HASH_FROM_MAIL{$email}{'passhash'};
-    my $result->{id}        = $Isucon5::HASH_FROM_MAIL{$email}{'id'};
-    $result->{account_name} = $Isucon5::HASH_FROM_MAIL{$email}{'account_name'};
-    $result->{nick_name}    = $Isucon5::HASH_FROM_MAIL{$email}{'nick_name'};
-    $result->{email}        = $Isucon5::HASH_FROM_MAIL{$email}{'email'};
+    my $user = $Isucon5::HASH_FROM_MAIL{$email};
+    abort_authentication_error() if !$user;
+    my $hashed_password = sha512_hex($password . $user->{'salt'});
+    abort_authentication_error() if $hashed_password ne $user->{'passhash'};
+    my $result->{id}        = $user->{'id'};
+    $result->{account_name} = $user->{'account_name'};
+    $result->{nick_name}    = $user->{'nick_name'};
+    $result->{email}        = $user->{'email'};
     session()->{user_id}    = $result->{id};
     return $result;
 }
