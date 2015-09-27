@@ -3,6 +3,7 @@ package Isucon5::Web;
 use strict;
 use warnings;
 use utf8;
+use Isucon5;
 use Kossy;
 use DBIx::Sunny;
 use Encode;
@@ -89,7 +90,7 @@ sub current_user {
 
 sub get_user {
     my ($user_id) = @_;
-    my $user = db->select_row('SELECT * FROM users WHERE id = ?', $user_id);
+    my $user = $Isucon5::USERS{$user_id};
     abort_content_not_found() if (!$user);
     return $user;
 }
